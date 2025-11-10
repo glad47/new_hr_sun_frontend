@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  mysql:
+    image: glad47/mysql:01
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      # MYSQL_DATABASE: rouyi
+    ports:
+      - "3307:3306"
+    volumes:
+      - "/c/Users/yhm21/mysql-data:/var/lib/mysql"
+   
+  
+ 
+  redis:
+    image: redis:6.2
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+ 
+  ruoyi-admin:
+    image: glad47/ruoyi-backend:04
+    container_name: ruoyi-admin
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8080:8080"
+ 
+  ruoyi-ui:
+    image: glad47/ruoyi-frontend:06
+    container_name: ruoyi-ui
+    restart: always
+    depends_on:
+      - ruoyi-admin
+    ports:
+      - "80:80"
+
+  sync-service:
+    image: glad47/sync:02
+    container_name: sync-service
+    restart: always
+    depends_on:
+      - mysql
+    
