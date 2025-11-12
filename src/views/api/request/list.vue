@@ -383,6 +383,7 @@ export default {
   methods: {
     /** 查询الاستذان列表 */
     getList() {
+      this.queryParams.empId = this.$route.params.empId
       this.loading = true
       listRequest(this.queryParams).then(response => {
         this.requestList = response.rows

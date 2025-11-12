@@ -57,6 +57,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
+
+      <el-form-item label="رقم الهوية" prop="identityNumber">
+        <el-input
+          v-model="queryParams.identityNumber"
+          placeholder="أدخل رقم الهوية"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <!-- <el-form-item label="رابط الصورة الشخصية" prop="photo">
         <el-input
           v-model="queryParams.photo"
@@ -302,6 +312,15 @@
           @click="printTable"
           v-hasPermi="['api:emp:export']"
         >طباعة</el-button>
+
+        <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            @click="handleSaveReport"
+            v-hasPermi="['api:report:add']"
+          >حفظ التقرير</el-button>
+
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -327,11 +346,16 @@
           </template>
         </el-table-column>
 
+
+
+
         <el-table-column label="الاسم" align="center" prop="name">
           <template slot-scope="scope">
             <span @click.stop>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
+
+        
         <el-table-column label="الراتب الشهري" align="center" prop="salary" />
         <el-table-column label="القسم" align="center" prop="deptId">
           <template slot-scope="scope">
@@ -465,136 +489,38 @@
     /> -->
 
     <!-- 添加或修改الموظفون对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="الاسم" prop="name">
-          <el-input v-model="form.name" placeholder="请输入الاسم" />
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="formReport" :model="formReport" :rules="rules" label-width="120px">
+        <el-form-item label="وصف التقرير" prop="description">
+          <el-input v-model="formReport.description" placeholder="أدخل وصف التقرير" />
         </el-form-item>
-        <!-- <el-form-item label="اسم العائلة" prop="lastName">
-          <el-input v-model="form.lastName" placeholder="أدخل اسم العائلة" />
-        </el-form-item> -->
-        <!-- <el-form-item label="الاسم الكامل" prop="fullName">
-          <el-input v-model="form.fullName" placeholder="أدخل الاسم الكامل" />
-        </el-form-item> -->
-        <!-- <el-form-item label="رابط الصورة الشخصية" prop="photo">
-          <el-input v-model="form.photo" placeholder="أدخل رابط الصورة الشخصية" />
-        </el-form-item> -->
-        <el-form-item label="القسم" prop="deptId">
-          <el-select v-model="form.deptId" placeholder="اختر القسم" clearable>
-            <el-option
-              v-for="item in deptOptions"
-              :key="item.deptId"
-              :label="item.deptName"
-              :value="item.deptId"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="الوظيفة" prop="positionId">
-          <el-select v-model="form.positionId" placeholder="اختر الوظيفة" clearable>
-            <el-option
-              v-for="item in positionOptions"
-              :key="item.positionId"
-              :label="item.positionName"
-              :value="item.positionId"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="المنطقة" prop="areaId">
-          <el-select v-model="form.areaId" placeholder="اختر المنطقة" clearable>
-            <el-option
-              v-for="item in areaOptions"
-              :key="item.id"
-              :label="item.areaName"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="تاريخ التوظيف" prop="hireDate">
+        <el-form-item label="تاريخ إنشاء التقرير" prop="createDate">
           <el-date-picker clearable
-            v-model="form.hireDate"
+            v-model="formReport.createDate"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="اختر تاريخ التوظيف">
+            placeholder="اختر تاريخ إنشاء التقرير">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="تاريخ الميلاد" prop="birthday">
-          <el-date-picker clearable
-            v-model="form.birthday"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="اختر تاريخ الميلاد">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="الجنس" prop="gender">
-          <el-select v-model="form.gender" placeholder="اختر الجنس" clearable>
-            <el-option label="ذكر (M)" value="M" />
-            <el-option label="أنثى (F)" value="F" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="رقم الهاتف" prop="phone">
-          <el-input v-model="form.phone" placeholder="أدخل رقم الهاتف" />
-        </el-form-item>
-        <el-form-item label="الجنسية" prop="national">
-          <el-input v-model="form.national" placeholder="أدخل الجنسية" />
-        </el-form-item>
-        <el-form-item label="المدينة" prop="city">
-          <el-input v-model="form.city" placeholder="أدخل المدينة" />
-        </el-form-item>
-        <el-form-item label="العنوان" prop="address">
-          <el-input v-model="form.address" placeholder="أدخل العنوان" />
-        </el-form-item>
-        <el-form-item label="الرمز البريدي" prop="postcode">
-          <el-input v-model="form.postcode" placeholder="أدخل الرمز البريدي" />
-        </el-form-item>
-        <el-form-item label="البريد الإلكتروني" prop="email">
-          <el-input v-model="form.email" placeholder="أدخل البريد الإلكتروني" />
-        </el-form-item>
-
-        <el-form-item label="الشيفت" prop="shiftId">
-          <el-select
-            v-model="form.shiftId"
-            placeholder="اختر الشيفت"
-            clearable
-            filterable
-          >
-            <el-option
-              v-for="shift in filteredShiftOptions[form.deptId] || []"
-              :key="shift.id"
-              :label="shift.name"
-              :value="shift.id"
-            />
-          </el-select>
-        </el-form-item>
-
-
-
-
-        <el-form-item label="الراتب الشهري" prop="salary">
-          <el-input v-model="form.salary" placeholder="أدخل الراتب الشهري" />
-        </el-form-item>
-
-      
-       
         <!-- <el-form-item label="علامة الحذف (0: موجود، 2: محذوف)" prop="delFlag">
           <el-input v-model="form.delFlag" placeholder="أدخل علامة الحذف (0: موجود، 2: محذوف)" />
         </el-form-item> -->
 
-       
-
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">تأكيد</el-button>
-        <el-button @click="cancel">إلغاء</el-button>
-      </div>
-    </el-dialog>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="submitReportWithLines">تأكيد</el-button>
+      <el-button @click="cancel">إلغاء</el-button>
+    </div>
+  </el-dialog>
   </div>
 </template>
 
 <script>
+
+
 import { listSalary, getEmp, delEmp, addEmp, updateEmp } from "@/api/api/emp"
+import { listReport, getReport, delReport, addReport, updateReport } from "@/api/api/report"
 import { listMonth, getMonth, delMonth, addMonth, updateMonth } from "@/api/api/month"
 import { listArea } from "@/api/api/area"
 import { listPosition } from "@/api/api/position"
@@ -632,6 +558,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      openReport: true,
       // 查询参数
       queryParams: {
         id: null,
@@ -649,6 +576,7 @@ export default {
         national: null,
         city: null,
         address: null,
+        identityNumber: null,
         postcode: null,
         email: null,
         shiftId: null,
@@ -668,11 +596,15 @@ export default {
       areaOptions: [],
       // 表单参数
       form: {},
+      formReport: {},
       // 表单校验
       rules: {
-        name: [
-          { required: true, message: "الاسم مطلوب", trigger: "blur" }
-        ]
+        description: [
+          { required: true, message: "وصف التقرير لا يمكن أن يكون فارغًا", trigger: "blur" }
+        ],
+        createDate: [
+          { required: true, message: "تاريخ إنشاء التقرير لا يمكن أن يكون فارغًا", trigger: "blur" }
+        ],
       }
 
     }
@@ -811,7 +743,48 @@ goToAttendence(row) {
   const url = `/hr/attendence/detail/list/${row.id}?${query}`;
   window.open(url, '_blank');
 },
+async submitReportWithLines() {
+    // Step 1: Create report metadata
+    const report = {
+      description: this.formReport.description,
+      createDate: this.formReport.createDate,
+      hrReportLineList: [] // will be filled below
+    };
 
+    // Step 2: Convert empList into report lines
+    report.hrReportLineList = this.empList
+      .filter(emp => !emp.isSummary) // exclude summary row
+      .map(emp => ({
+        empId: emp.id,
+        name: emp.name,
+        deptId: emp.deptId,
+        shiftId: emp.shiftId,
+        salary: Number(emp.salary),
+        attendanceDays: Number(emp.attendanceDays),
+        absenceDays: Number(emp.absenceDays),
+        forgetPunchInDays: Number(emp.forgetPunchInDays),
+        forgetPunchOutDays: Number(emp.forgetPunchOutDays),
+        forgetPunchDays: Number(emp.forgetPunchDays),
+        minLateArrival: Number(emp.minLateArrival),
+        minEarlyLeft: Number(emp.minEarlyLeft),
+        totalLoan: Number(emp.totalLoan),
+        totalDedection: Number(emp.totalDedection),
+        deductionLate: Number(emp.deductionLate),
+        deductionAbsent: Number(emp.deductionAbsent),
+        totalAdditionAmount: Number(emp.totalAdditionAmount),
+        salaryAfterDeduction: Number(emp.salaryAfterDeduction)
+      }));
+
+    // Step 3: Send to backend
+    try {
+      await addReport(report);
+      this.$message.success("تم حفظ التقرير مع التفاصيل بنجاح");
+      this.open = false;
+    } catch (error) {
+      this.$message.error("حدث خطأ أثناء حفظ التقرير");
+      console.error(error);
+    }
+},
 
 handleExport() {
     const exportData = this.empList.map(emp => ({
@@ -948,7 +921,7 @@ handleExport() {
     // 取消按钮
     cancel() {
       this.open = false
-      this.reset()
+      this.resetReport()
     },
     // 表单重置
     reset() {
@@ -966,6 +939,7 @@ handleExport() {
         national: null,
         city: null,
         address: null,
+        identityNumber: null,
         postcode: null,
         email: null,
         delFlag: null,
@@ -978,7 +952,26 @@ handleExport() {
         year: null,
         month: null,
       }
-      this.resetForm("form")
+      this.reset("form")
+    },
+    resetReport() {
+      this.formReport = {
+        id: null,
+        description: null,
+        createDate: null,
+        delFlag: null,
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null
+      }
+      this.hrReportLineList = []
+      this.reset("formReport")
+    },
+     handleSaveReport() {
+      this.resetForm()
+      this.open = true
+      this.title = "إضافة التقارير المحفوظة"
     },
     /** 搜索按钮操作 */
     handleQuery() {

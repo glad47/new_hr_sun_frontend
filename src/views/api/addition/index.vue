@@ -33,6 +33,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
+      <el-form-item label="رقم الهوية" prop="identityNumber">
+        <el-input
+          v-model="queryParams.identityNumber"
+          placeholder="أدخل رقم الهوية"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <!-- <el-form-item label="رابط الصورة الشخصية" prop="photo">
         <el-input
           v-model="queryParams.photo"
@@ -248,6 +257,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="المعرف للموظف" align="center" prop="id" />
       <el-table-column label="الاسم" align="center" prop="name" />
+      <el-table-column label="رقم الهوية" align="center" prop="identityNumber" />
       <!-- <el-table-column label="رابط الصورة الشخصية" align="center" prop="photo" /> -->
       <el-table-column label="القسم" align="center" prop="deptId">
         <template slot-scope="scope">
@@ -470,6 +480,7 @@ export default {
         national: null,
         city: null,
         address: null,
+        identityNumber: null,
         postcode: null,
         email: null,
       },
@@ -564,6 +575,7 @@ export default {
         national: null,
         city: null,
         address: null,
+        identityNumber: null,
         postcode: null,
         email: null,
         delFlag: null,

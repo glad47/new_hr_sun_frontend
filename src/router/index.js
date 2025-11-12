@@ -158,6 +158,23 @@ export const dynamicRoutes = [
     ]
   },
   {
+    path: '/hr/report/detail',
+    component: Layout,
+    hidden: true,
+    permissions: ['api:report:list'], // optional: use your actual permission code
+    children: [
+      {
+        path: 'list/:reportId(\\d+)',
+        component: () => import('@/views/api/report/list.vue'),
+        name: 'ReportDetail',
+        meta: {
+          title: 'التقارير المحفوظة',
+          activeMenu: 'api/report' // highlights the main list menu
+        }
+      }
+    ]
+  },
+  {
     path: '/hr/change-punch/detail',
     component: Layout,
     hidden: true,
