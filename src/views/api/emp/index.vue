@@ -220,6 +220,19 @@
         />
       </el-form-item>
 
+
+     <el-form-item label="بدون شيفت" prop="noShift">
+        <el-checkbox v-model="queryParams.noShift">
+        </el-checkbox>
+      </el-form-item>
+
+      <el-form-item label="بدون راتب" prop="noSalary">
+        <el-checkbox v-model="queryParams.noSalary">
+        </el-checkbox>
+      </el-form-item>
+
+
+
       <!-- <el-form-item label="الاجهزة المرتبطة" prop="deviceIds">
           <el-input
             v-model="queryParams.deviceIds"
@@ -554,6 +567,8 @@ export default {
         email: null,
         shiftId: null,
         salary: null,
+        noShift: false,   // new field
+        noSalary: false   // new field
       },
       deptOptions: [],
       positionOptions: [],
@@ -702,6 +717,8 @@ export default {
         updateTime: null,
         shiftId: null,
         salary: null,
+        noShift: false,   // new field
+        noSalary: false   // new field
       }
       this.resetForm("form")
     },
